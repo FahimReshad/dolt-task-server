@@ -23,7 +23,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const productCollection = client.db("timeKeeper").collection("products");
 
@@ -58,7 +58,6 @@ async function run() {
           filter.price.$lte = Number(maxPrice);
         }
       }
-
       // Set default sorting
       let sort = {};
       if (sortBy === "priceAsc") {
@@ -68,7 +67,6 @@ async function run() {
       } else if (sortBy === "newest") {
         sort.creationDateTime = -1; // Newest first
       }
-
       const options = {
         skip: page * limit,
         limit: Number(limit),
