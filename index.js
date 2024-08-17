@@ -3,7 +3,7 @@ const cors = require("cors");
 const { MongoClient, ServerApiVersion } = require("mongodb");
 require("dotenv").config();
 const app = express();
-const port = process.env.PORT || 5000; 
+const port = process.env.PORT || 5000;
 
 // middleware:
 app.use(express.json());
@@ -55,24 +55,23 @@ async function run() {
           filter.price.$lte = Number(maxPrice);
         }
       }
+
       // Set default sorting
       let sort = {};
       if (sortBy === "priceAsc") {
-        sort.price = 1; // Ascending order
+        sort.price = 1;
       } else if (sortBy === "priceDesc") {
-        sort.price = -1; // Descending order
+        sort.price = -1;
       } else if (sortBy === "newest") {
-        sort.creationDateTime = -1; // Newest first
+        sort.creationDateTime = -1;
       }
       const options = {
         skip: page * limit,
         limit: Number(limit),
         sort: sort,
       };
-
       const totalCount = await productCollection.countDocuments(filter);
       const products = await productCollection.find(filter, options).toArray();
-
       res.send({ products, totalCount });
     });
     // Send a ping to confirm a successful connection
