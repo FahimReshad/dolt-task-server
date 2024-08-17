@@ -4,11 +4,9 @@ const { MongoClient, ServerApiVersion } = require("mongodb");
 require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 5000;
-
 // middleware:
 app.use(express.json());
 app.use(cors());
-
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.rpkd5x3.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -38,7 +36,7 @@ async function run() {
         page,
         limit,
       } = req.query;
-      
+
       const filter = {};
       if (productName) {
         filter.productName = { $regex: productName, $options: "i" };
@@ -78,7 +76,6 @@ async function run() {
 
       res.send({ products, totalCount });
     });
-
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
