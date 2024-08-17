@@ -3,7 +3,8 @@ const cors = require("cors");
 const { MongoClient, ServerApiVersion } = require("mongodb");
 require("dotenv").config();
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5000; 
+
 // middleware:
 app.use(express.json());
 app.use(cors());
@@ -22,9 +23,7 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
-
     const productCollection = client.db("timeKeeper").collection("products");
-
     app.get("/products", async (req, res) => {
       const {
         productName,
