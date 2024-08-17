@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const { MongoClient, ServerApiVersion } = require("mongodb");
-require('dotenv').config()
+require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -25,53 +25,61 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
-const productCollection = client.db('timeKeeper').collection('products')
+    const productCollection = client.db("timeKeeper").collection("products");
 
-app.get('/products', async (req, res) => {
-  const { productName, brandName, categoryName, minPrice, maxPrice, sortBy, page, limit } = req.query;
-  
-  const filter = {};
-  if (productName) {
-    filter.productName = { $regex: productName, $options: 'i' };
-  }
-  if (brandName) {
-    filter.brandName = { $regex: brandName, $options: 'i' };
-  }
-  if (categoryName) {
-    filter.category = { $regex: categoryName, $options: 'i' };
-  }
-  if (minPrice || maxPrice) {
-    filter.price = {};
-    if (minPrice) {
-      filter.price.$gte = Number(minPrice);
-    }
-    if (maxPrice) {
-      filter.price.$lte = Number(maxPrice);
-    }
-  }
+    app.get("/products", async (req, res) => {
+      const {
+        productName,
+        brandName,
+        categoryName,
+        minPrice,
+        maxPrice,
+        sortBy,
+        page,
+        limit,
+      } = req.query;
 
-  // Set default sorting
-  let sort = {};
-  if (sortBy === 'priceAsc') {
-    sort.price = 1; // Ascending order
-  } else if (sortBy === 'priceDesc') {
-    sort.price = -1; // Descending order
-  } else if (sortBy === 'newest') {
-    sort.creationDateTime = -1; // Newest first
-  }
+      const filter = {};
+      if (productName) {
+        filter.productName = { $regex: productName, $options: "i" };
+      }
+      if (brandName) {
+        filter.brandName = { $regex: brandName, $options: "i" };
+      }
+      if (categoryName) {
+        filter.category = { $regex: categoryName, $options: "i" };
+      }
+      if (minPrice || maxPrice) {
+        filter.price = {};
+        if (minPrice) {
+          filter.price.$gte = Number(minPrice);
+        }
+        if (maxPrice) {
+          filter.price.$lte = Number(maxPrice);
+        }
+      }
 
-  const options = {
-    skip: page * limit,
-    limit: Number(limit),
-    sort: sort,
-  };
+      // Set default sorting
+      let sort = {};
+      if (sortBy === "priceAsc") {
+        sort.price = 1; // Ascending order
+      } else if (sortBy === "priceDesc") {
+        sort.price = -1; // Descending order
+      } else if (sortBy === "newest") {
+        sort.creationDateTime = -1; // Newest first
+      }
 
-  const totalCount = await productCollection.countDocuments(filter);
-  const products = await productCollection.find(filter, options).toArray();
+      const options = {
+        skip: page * limit,
+        limit: Number(limit),
+        sort: sort,
+      };
 
-  res.send({ products, totalCount });
-});
+      const totalCount = await productCollection.countDocuments(filter);
+      const products = await productCollection.find(filter, options).toArray();
 
+      res.send({ products, totalCount });
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
