@@ -38,7 +38,7 @@ async function run() {
         page,
         limit,
       } = req.query;
-
+      
       const filter = {};
       if (productName) {
         filter.productName = { $regex: productName, $options: "i" };
